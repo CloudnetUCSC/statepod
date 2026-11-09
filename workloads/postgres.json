@@ -1,0 +1,36 @@
+{
+  "name": "postgres",
+  "description": "PostgreSQL 16 (Debian/glibc, multi-process, shared memory, real disk writes) for the evaluation",
+  "image": "postgres:16",
+  "port": 5432,
+  "args": [
+    "docker-entrypoint.sh",
+    "postgres"
+  ],
+  "env": [
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/postgresql/16/bin",
+    "LANG=en_US.utf8",
+    "POSTGRES_PASSWORD=statepod",
+    "POSTGRES_HOST_AUTH_METHOD=trust",
+    "PGDATA=/var/lib/postgresql/data"
+  ],
+  "ready": {
+    "kind": "exec",
+    "cmd": [
+      "pg_isready",
+      "-U",
+      "postgres",
+      "-h",
+      "127.0.0.1"
+    ]
+  },
+  "data_dir": "var/lib/postgresql/data",
+  "stateful": true,
+  "capabilities": [
+    "CAP_CHOWN",
+    "CAP_DAC_OVERRIDE",
+    "CAP_FOWNER",
+    "CAP_SETUID",
+    "CAP_SETGID"
+  ]
+}

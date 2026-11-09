@@ -1,0 +1,25 @@
+\begin{tabular}{lrrrrr}
+\toprule
+Method & Data & Down- & Client & Evic- & Source \\
+ & (MB) & time (s) & outage (s) & tion (s) & CPU (s) \\
+\midrule
+\multicolumn{6}{l}{\emph{Baselines}} \\
+Vanilla pre-copy & 6.458 & 7.30 & 8.07 & 27.61 & 1.00 \\
+CRIU incremental & 6.517 & 7.28 & 8.11 & 28.06 & 1.00 \\
+Vanilla + zstd & 0.609 & 2.59 & 3.42 & 6.11 & 1.14 \\
+CRIU incr.\ + zstd & 0.618 & 2.60 & 3.44 & 6.27 & 1.18 \\
+Restart from RDB & 0.068 & 3.82 & 4.25 & 0.03 & 0.16 \\
+\midrule
+\multicolumn{6}{l}{\emph{Pre-copy with the synthesized baseline, mechanisms added in order}} \\
++M1 (1 round, no zstd) & 1.794 & 4.75 & 5.60 & 12.17 & 0.92 \\
++M2 (4 rounds) & 3.378 & 4.70 & 5.55 & 22.05 & 1.58 \\
++zstd & 0.413 & 2.36 & 3.10 & 8.82 & 1.59 \\
++M3 (tmpfs) & 0.411 & 2.34 & 3.14 & 8.89 & 1.66 \\
++M4 = \spod{} pre-copy & 0.419 & 2.38 & 3.20 & 12.99 & 2.01 \\
+\quad with merged cut-over$^\dagger$ & 0.418 & 2.00 & 2.50 & 12.60 & 2.04 \\
+\midrule
+\multicolumn{6}{l}{\emph{Post-copy}} \\
+CRIU lazy-pages & 3.116 & 6.73 & 37.63 & 47.69 & 0.81 \\
+\spod{} post-copy (M5) & 1.282 & 2.88 & 9.04 & 14.38 & 1.04 \\
+\bottomrule
+\end{tabular}

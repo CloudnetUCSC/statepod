@@ -1,0 +1,91 @@
+{
+ "campaign": "lab",
+ "seed": 20261027,
+ "_purpose": "Final lab campaign. Stages in priority order: core results first. Every stage under the campaign rules (interleaved rounds, validity gate, ledger). Profiles: P1 2 Mb/s 200 ms (validated against the real WAN), P2 10/100, P3 50/50, P4 200/20, P2L P2 + 0.1 % loss. All migration traffic crosses a WireGuard tunnel (set in the host config).",
+ "stages": [
+  {
+   "name": "ladder",
+   "preset": "ladder",
+   "profiles": "P1",
+   "rounds": 10,
+   "timeout": 1800
+  },
+  {
+   "name": "workloads",
+   "preset": "lab-workloads",
+   "profiles": "P2",
+   "rounds": 10,
+   "timeout": 3600
+  },
+  {
+   "name": "net",
+   "preset": "lab-net",
+   "profiles": "P1,P2,P3,P4,P2L",
+   "rounds": 5,
+   "timeout": 1800
+  },
+  {
+   "name": "multi",
+   "preset": "lab-multi",
+   "profiles": "P2",
+   "rounds": 5,
+   "timeout": 3600
+  },
+  {
+   "name": "size",
+   "preset": "lab-size",
+   "profiles": "P3",
+   "rounds": 5,
+   "timeout": 3600
+  },
+  {
+   "name": "faults",
+   "preset": "faults",
+   "profiles": "P2",
+   "rounds": 3,
+   "timeout": 1800
+  },
+  {
+   "name": "continuity",
+   "preset": "continuity",
+   "profiles": "P2",
+   "rounds": 5,
+   "timeout": 1800
+  },
+  {
+   "name": "outbound",
+   "preset": "outbound",
+   "profiles": "P2",
+   "rounds": 3,
+   "timeout": 1800
+  },
+  {
+   "name": "synth-dirty",
+   "preset": "synth-dirty",
+   "profiles": "P2",
+   "rounds": 5,
+   "timeout": 1800
+  },
+  {
+   "name": "synth-entropy",
+   "preset": "synth-entropy",
+   "profiles": "P2",
+   "rounds": 5,
+   "timeout": 1800
+  },
+  {
+   "name": "synth-fs",
+   "preset": "synth-fs",
+   "profiles": "P2",
+   "rounds": 5,
+   "timeout": 3600
+  },
+  {
+   "name": "synth-fs-rewrite",
+   "preset": "synth-fs-rewrite",
+   "profiles": "P2",
+   "rounds": 5,
+   "timeout": 3600
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+\begin{tabular}{lrrrr}
+\toprule
+ & Round 1 & Rounds 2--4 & Round 1 & Eviction \\
+Workload, method & (MB) & (MB) & transfer (s) & (s) \\
+\midrule
+Redis, vanilla & 3.08 & 2.27 & 14.1 & 27.6 \\
+Redis, vanilla + zstd & 3.08 & 2.14 & 2.2 & 6.1 \\
+Python, vanilla + zstd & 97.90 & 6.15 & 385.5 & 400.5 \\
+\bottomrule
+\end{tabular}

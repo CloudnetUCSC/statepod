@@ -1,0 +1,10 @@
+{
+  "name": "jvm",
+  "description": "JVM HTTP service with a deterministic in-memory cache (JIT, class metadata, sizeable heap)",
+  "image": "statepod-jvm:1",
+  "port": 8000,
+  "args": ["java", "-Xms256m", "-Xmx256m", "-XX:+UseSerialGC", "-XX:-UsePerfData", "-cp", "/app", "Server", "--entries", "20000", "--value-kb", "4"],
+  "env": ["PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "JAVA_HOME=/opt/java/openjdk"],
+  "ready": {"kind": "http", "path": "/health"},
+  "stateful": true
+}

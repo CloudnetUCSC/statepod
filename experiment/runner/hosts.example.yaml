@@ -1,0 +1,70 @@
+# Copy to hosts.yaml and edit. Consumed by run_experiment.py.
+# All hosts must be reachable via passwordless SSH (keys) and have passwordless sudo
+# for runc/criu/tc, matching how the manual experiments were run.
+
+source:
+  ssh: user@source-host             # user@host[:port] for the source VM
+  workdir: ~/statepod/experiment/source   # dir containing statepod.json/config.json
+  statepod: ~/statepod/bin/statepod
+  migrate_listen_port: 8080          # port the destination receiver listens on
+  wan_iface: ""                      # interface to shape with tc netem ("" = no shaping)
+  # Optional: carry the migration transport through an SSH -L tunnel from the
+  # source to the destination when the source network filters migrate_listen_port.
+  # The rsync-daemon transport and the iperf3 check are refused while tunnelled.
+  tunnel:
+    enabled: false
+    host: ""                          # destination's real IP (== destination.public_ip)
+    user: ""                          # ssh user on the destination
+    key: ""                           # private key path AS IT EXISTS ON THE SOURCE GUEST
+                                       # ("" = guest's own ssh agent/config)
+
+destination:
+  ssh: user@destination-host
+  public_ip: ""                      # IP the source VM dials for migration/probes
+                                     # (required when ssh: is a ~/.ssh/config alias)
+  workdir: ~/statepod/experiment/destination
+  statepod: ~/statepod/bin/statepod
+
+# SSH private key used for every ssh/scp call (also settable via --ssh-key).
+ssh_key: ""                          # e.g. ~/.ssh/statepod.key ("" = ssh agent/config)
+
+# Client-side availability probe — runs on the SOURCE VM (no third VM / HAProxy;
+# a third client VM is not needed). probe.sh hits the source's own host-forwarded
+# port and fails over to the destination's host port when the source stops
+# answering. Both VMs must forward the same host port (create --host-port).
+client:
+  probe_port: 6380                   # host port forwarded to the workload on BOTH VMs
+  probe_interval: 0.05               # seconds between probe ticks
+  probe_timeout: 1.0                 # per-attempt timeout; attempts overlap, so this no longer limits resolution (probe.py)
+  # SLA load client (load_client.py) -- opt in with --load-client.
+  # Same source->dest failover as the probe above, but real per-request GET/PING
+  # traffic with a JSON-per-line log (load_client.log), for latency percentiles
+  # and M5 cold/warm key attribution instead of just up/down.
+  load_rate: 20                      # requests/sec, closed-loop
+  load_timeout: 1.0                  # per-request timeout
+
+experiment:
+  mode: precopy                      # precopy | sync | burst (burst = dispatcher picks precopy/sync from the container's `stateful` classification)
+  workload: redis                    # redis | node (chooses probe type + lifecycle)
+  repetitions: 1
+  netem: ""                          # e.g. "rate 20mbit delay 50ms" ("" = unshaped)
+  results_root: ../results           # relative to runner/ or absolute
+  # Pin the workload image BY DIGEST: source and destination bundles must come
+  # from the same image build or CRIU restore fails ("File ... has bad size").
+  image: redis:7.4-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99
+  node_image: node:20-alpine          # used when workload: node; pin by digest too once resolved
+  pg_image: postgres:16@sha256:1a6ab3f5345eb6dbe04a1349529caabdb0ab09293a09590fad07b2246bfa4b54   # workload: postgres (pinned; pull the same digest on BOTH VMs)
+  # iperf3 link probe: source->destination bandwidth measured before and
+  # after every rep, recorded in manifest.json (link_probe.pre / link_probe.post).
+  # Needs iperf3 installed on both VMs and the port open dest-side (like 8080).
+  iperf_port: 5201                   # iperf3 server port on the destination
+  iperf_duration: 5                  # seconds per probe
+  # iperf_omit: 2                   # optional: seconds of TCP slow-start skipped before measuring (default 0); at ~150 ms RTT a 3 s probe under-reads a 30 Mb/s cap without it
+  # WAN-contention experiment (--contend): a separate persistent
+  # iperf3 flood server/port from the pre/post probe above (that one is
+  # one-shot and would collide with a long-running flood on the same port).
+  # 8090 sits inside the migrate port range already opened dest-side
+  # (8080-8090) and is
+  # otherwise unused (migrate itself is fixed at 8080).
+  contend_port: 8090
+  contend_streams: 2                 # parallel iperf3 streams (-P)

@@ -1,0 +1,16 @@
+\begin{tabular}{lccccc}
+\toprule
+Fault & Van. & Lazy & M4 & M4m & M5 \\
+\midrule
+0.1\,\% loss, pre-copy (30\,s) & 3C & -- & 3C & 3C & -- \\
+Partition 15\,s, pre-copy & 3C & -- & 3C & 3C & -- \\
+Partition 15\,s, final round & 3C & 3C & 2C 1A & 3C & 3C \\
+Partition 150\,s, final round & \textbf{3U} & \textbf{3U} & 2C 1A & 3H & 3R \\
+Kill receiver, pre-copy & 3R & -- & 3R & 3R & -- \\
+Kill receiver, final round & \textbf{3U} & \textbf{3U} & 2R 1H & 3H & 3R \\
+Kill restore, final round & \textbf{3U} & \textbf{1C 2U} & 3R & 1C 2R & 3R \\
+Partition 30\,s, post-copy drain & -- & 3C & -- & -- & 3C \\
+Kill receiver, post-copy drain & -- & \textbf{3U} & -- & -- & 3R \\
+Stall lazy-pages daemon, drain & -- & 3T & -- & -- & 3R \\
+\bottomrule
+\end{tabular}

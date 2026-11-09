@@ -1,0 +1,15 @@
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{Downtime (s)} & \multicolumn{2}{c}{Client outage (s)} & \multicolumn{2}{c}{Eviction (s)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Workload & lazy & M5 & lazy & M5 & lazy & M5 \\
+\midrule
+Redis, P1 & 6.73 & 2.88 & 37.6 & 9.04 & 47.7 & 14.4 \\
+Redis, P2 & 2.83 & 1.87 & 16.4 & 3.49 & 22.0 & 6.70 \\
+Redis-AOF & 4.59 & 3.59 & 18.6 & 5.92 & 28.2 & 10.5 \\
+PostgreSQL & 84.2 & 9.90 & 95.1 & 15.6 & 112.8 & 32.4 \\
+JVM & 13.4 & 8.31 & 178.5 & 53.7 & 311.7 & 57.7 \\
+Python & 4.01 & 3.74 & 188.2 & 9.79 & 232.5 & 13.3 \\
+Synthetic 64\,MB & 1.99 & 2.92 & 2.81 & 3.68 & 71.5 & 55.1 \\
+\bottomrule
+\end{tabular}
